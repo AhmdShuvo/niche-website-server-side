@@ -27,12 +27,33 @@ async function run() {
       console.log("Connected");
       const database = client.db('Cars-Server');
       const servicesCollection = database.collection('Cars');
+      const purchaseCollection = database.collection('purchases');
 
+
+
+      app.post('/orders',async(req,res)=>{
+           const order=req.body;
+
+           const result=await purchaseCollection.insertOne(order);
+res.send(result)
+      });
+                
+      // GEt All Cars ///
+                
          app.get('/cars',async(req,res)=>{
             const cursor=servicesCollection.find({});
 
             const result=await cursor.toArray()
 
+        res.json(result)
+      })
+
+      // get all Orders //
+
+      app.get("/orders",async (req,res)=>{
+
+        const cursor= purchaseCollection.find({});
+        const result =await cursor.toArray()
         res.json(result)
       })
     } finally {
