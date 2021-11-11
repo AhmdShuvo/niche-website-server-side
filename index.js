@@ -73,7 +73,6 @@ res.send(result)
           const query={_id: Objectid(id)}
           const result = await purchaseCollection.deleteOne(query);
           res.send(result)
-          console.log(userEmail);
        })
                 
 
