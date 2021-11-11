@@ -30,6 +30,7 @@ async function run() {
       const servicesCollection = database.collection('Cars');
       const purchaseCollection = database.collection('purchases');
       const UsersCollection = database.collection('users');
+      const ratingsCollection = database.collection('ratngs');
 
 
 
@@ -39,6 +40,19 @@ async function run() {
            const result=await purchaseCollection.insertOne(order);
 res.send(result)
       });
+
+
+
+        // POst Ratings By users //
+        app.post('/reviews',async(req,res)=>{
+
+          const data=req.body;
+          console.log( "recieved data" ,data);
+
+          const result =await ratingsCollection.insertOne(data);
+
+          res.send(result)
+        })
                     // Store Users ///
 
 
@@ -75,7 +89,16 @@ res.send(result)
           res.send(result)
        })
                 
+                  // get Ratings ///
 
+                  app.get('/reviews',async(req,res)=>{
+
+                    const cursor=ratingsCollection.find({});
+
+                    const result=await cursor.toArray()
+                    res.json(result);
+                    
+                  })
 
             //  Get User Orders //
 
