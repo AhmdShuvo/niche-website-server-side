@@ -1,4 +1,4 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient, Admin } = require("mongodb");
 const Objectid=require('mongodb').ObjectId;
 const express=require('express');
 const cors=require('cors');
@@ -33,7 +33,19 @@ async function run() {
       const ratingsCollection = database.collection('ratngs');
 
 
+          
 
+      // Add New Car to Data base //
+      app.post("/cars",async(req,res)=>{
+
+        const product=req.body;
+
+        const result=await servicesCollection.insertOne(product);
+        console.log(result);
+        res.send(result)
+    })
+
+      //  Store Purchase Data ///
       app.post('/orders',async(req,res)=>{
            const order=req.body;
 
@@ -63,7 +75,81 @@ res.send(result)
 
         res.send(result)
        
-       })
+       });
+
+      //  Get Admins ///
+
+      app.get('/user/admin/:email', async(req,res)=>{
+
+         const email= req.params.email;
+          let isAdmin=false
+         const query={email:email}
+         const user=await UsersCollection.findOne(query);
+
+         if(user?.role==="admin"){
+           isAdmin=true
+
+         }
+
+         res.json({admin : isAdmin})
+      })
+
+        //  delete order as Admin ///
+
+        app.delete("/orders/:id",async(req,res)=>{
+
+          const id=req.params.id;
+
+          const query={_id: Objectid(id)}
+          console.log(id);
+          const result=await purchaseCollection.deleteOne(query);
+
+          res.send(result)
+      });
+
+      //  change pending to active //
+      app.put("/orders/:id",async(req,res)=>{
+        const id=req.params.id;
+        console.log('id ',id);
+      
+      const updateUser=req.body;
+    console.log(updateUser);
+       const filter={_id: Objectid(id)}
+       const options = { upsert: false };
+       const updateDoc = {
+        $set: {
+          status: `active`
+        },
+      };
+
+      const result= await purchaseCollection.updateMany(filter,updateDoc,options)
+     
+
+
+       res.json(result)
+    })
+
+      //  update Admin ROle ///
+
+      app.put('/users',async(req,res)=>{
+
+        const user=req.body;
+        const filter={email:user.email}
+       
+
+        console.log(user.email);
+
+        const updateDoc = {
+          $set: {
+            role: "admin"
+          },
+        };
+
+        const result=await UsersCollection.updateOne(filter,updateDoc);
+
+      res.json(result)
+       
+      })
 
       //  Update For Google USers///
       app.put('/users',async(req,res)=>{
