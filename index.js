@@ -69,6 +69,7 @@ res.send(result)
 
 
        app.post('/users',async (req,res)=>{
+         console.log('user Post api hit');
         const user=req.body;
 
         const result=await UsersCollection.insertOne(user);
@@ -152,16 +153,17 @@ res.send(result)
       })
 
       //  Update For Google USers///
-      app.put('/users',async(req,res)=>{
+      app.post('/users',async(req,res)=>{
 
         const user=req.body;
 
         const filter = { email:user.email};
+        console.log(user);
         const options = { upsert: true };
         const updateDoc = {$set:user};
       const result= await  UsersCollection.updateOne(filter,updateDoc,options);
 
-       res.send(result)
+       res.json(result)
       })
 
 
