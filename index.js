@@ -167,6 +167,20 @@ res.send(result)
       })
 
 
+
+
+            //  Delete Products ///
+
+            app.delete('/cars/:carId',async(req,res)=>{
+              console.log("api hit");
+
+              const id=req.params.carId;
+              console.log("delte Product",id);
+              const query={_id: Objectid(id)}
+              const result = await servicesCollection.deleteOne(query);
+              res.send(result)
+
+            })
          //  Delete User Purchase //
 
          app.delete("/order/:email",async(req,res)=>{
