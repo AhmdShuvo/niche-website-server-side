@@ -119,7 +119,7 @@ res.send(result)
        const options = { upsert: false };
        const updateDoc = {
         $set: {
-          status: `active`
+          status: `Shipped`
         },
       };
 
